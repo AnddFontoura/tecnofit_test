@@ -12,14 +12,9 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
-abstract class BaseRepository
+class BaseRepository
 {
     protected mixed $model;
-
-    public function __construct($model)
-    {
-        $this->model = $model;
-    }
 
     public function create(array $data)
     {

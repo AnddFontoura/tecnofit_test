@@ -6,5 +6,8 @@ use App\Model\Account;
 
 class AccountRepository extends BaseRepository
 {
-    protected mixed $model = Account::class;
+    protected function __construct(Account $model)
+    {
+        $this->model = $model;
+    }
 }

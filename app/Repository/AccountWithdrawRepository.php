@@ -18,8 +18,10 @@ use Hyperf\Database\Model\Collection;
 
 class AccountWithdrawRepository extends BaseRepository
 {
-    protected mixed $model = AccountWithdraw::class;
-
+    protected function __construct(AccountWithdraw $model)
+    {
+        $this->model = $model;
+    }
     public function getScheduledForNow(): Collection
     {
         return $this->model

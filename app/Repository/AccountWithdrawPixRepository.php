@@ -6,6 +6,8 @@ use App\Model\AccountWithdrawPix;
 
 class AccountWithdrawPixRepository extends BaseRepository
 {
-    protected mixed $model = AccountWithdrawPix::class;
-
+    protected function __construct(AccountWithdrawPix $model)
+    {
+        $this->model = $model;
+    }
 }

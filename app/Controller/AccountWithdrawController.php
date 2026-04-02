@@ -26,6 +26,7 @@ class AccountWithdrawController extends AbstractController
         protected AccountService $accountService,
         protected AccountWithdrawPixService $accountWithdrawPixService,
     ) {
+        parent::__construct();
     }
 
     public function index(RequestInterface $request, ResponseInterface $response)
@@ -40,7 +41,7 @@ class AccountWithdrawController extends AbstractController
         RequestInterface $request,
         RequestInterface $response,
         string $accountUuid
-    ) {
+    ): array {
         $dto = array_merge(
             [
                 'account_id' => $accountUuid,

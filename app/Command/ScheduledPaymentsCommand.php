@@ -19,11 +19,11 @@ use Hyperf\Command\Command as HyperfCommand;
 use Hyperf\Crontab\Annotation\Crontab;
 use Psr\Container\ContainerInterface;
 
-#[Crontab(
+/*#[Crontab(
     rule: '* * * * *',
     name: 'scheduled_withdraw',
     callback: 'execute',
-)]
+)]*/
 class ScheduledPaymentsCommand extends HyperfCommand
 {
     public function __construct(
