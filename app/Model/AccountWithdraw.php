@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Model;
 
 use Hyperf\DbConnection\Model\Model;
+use Ramsey\Uuid\Uuid;
 
 /**
  * @property string $id 
@@ -21,6 +22,8 @@ use Hyperf\DbConnection\Model\Model;
  */
 class AccountWithdraw extends Model
 {
+    public bool $incrementing = false;
+    protected string $keyType = 'string';
     /**
      * The table associated with the model.
      */
@@ -30,6 +33,7 @@ class AccountWithdraw extends Model
      * The attributes that are mass assignable.
      */
     protected array $fillable = [
+        'id',
         'account_id',
         'method',
         'amount',
@@ -50,4 +54,5 @@ class AccountWithdraw extends Model
         'created_at' => 'datetime',
         'updated_at' => 'datetime'
     ];
+
 }

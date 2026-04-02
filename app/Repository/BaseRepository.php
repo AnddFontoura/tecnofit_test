@@ -14,7 +14,7 @@ namespace App\Repository;
 
 class BaseRepository
 {
-    protected mixed $model;
+    protected $model;
 
     public function create(array $data)
     {
@@ -28,6 +28,6 @@ class BaseRepository
 
     public function getById($id)
     {
-        return $this->model->find($id);
+        return $this->model->where('id', $id)->first();
     }
 }

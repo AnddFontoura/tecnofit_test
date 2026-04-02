@@ -18,34 +18,5 @@ use InvalidArgumentException;
 
 class AccountService
 {
-    public function __construct(
-        protected AccountRepository $accountRepository,
-        protected AccountWithdrawRepository $accountWithdrawRepository,
-        protected AccountWithdrawService $accountWithdrawService,
-    ) {
-    }
 
-    public function updateBalance(string $accountId, float $amount, int $accountWithdrawId): void
-    {
-        $account = $this->accountRepository->getById($accountId);
-
-        if ($account->amount < $amount) {
-            $this->accountWithdrawService->storeError($accountWithdrawId, 'Insufficient balance');
-            throw new InvalidArgumentException('Insufficient balance');
-        }
-
-        $this->accountRepository->update(
-            [
-                'amount' => $account->amount - $amount,
-            ],
-            $accountId
-        );
-
-        $this->accountWithdrawRepository->update(
-            [
-                'done' => true,
-            ],
-            $accountWithdrawId
-        );
-    }
 }

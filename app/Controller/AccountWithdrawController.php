@@ -12,21 +12,27 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Request\AccountWithdrawRequest;
 use App\Service\AccountService;
 use App\Service\AccountWithdrawPixService;
 use App\Service\AccountWithdrawService;
 use Exception;
 use Hyperf\HttpServer\Contract\RequestInterface;
 use Hyperf\HttpServer\Contract\ResponseInterface;
+use function Hyperf\Support\make;
 
 class AccountWithdrawController extends AbstractController
 {
+    protected AccountWithdrawService $accountWithdrawService;
+
+    protected AccountService $accountService;
+
+    protected AccountWithdrawPixService $accountWithdrawPixService;
+
     public function __construct(
-        protected AccountWithdrawService $accountWithdrawService,
-        protected AccountService $accountService,
-        protected AccountWithdrawPixService $accountWithdrawPixService,
     ) {
         parent::__construct();
+        $this->accountWithdrawService = make(AccountWithdrawService::class);
     }
 
     public function index(RequestInterface $request, ResponseInterface $response)
@@ -38,7 +44,7 @@ class AccountWithdrawController extends AbstractController
      * @throws Exception
      */
     public function withdraw(
-        RequestInterface $request,
+        AccountWithdrawRequest $request,
         RequestInterface $response,
         string $accountUuid
     ): array {
@@ -52,7 +58,7 @@ class AccountWithdrawController extends AbstractController
         $this->accountWithdrawService->withdraw($dto);
 
         return [
-            'message' => $accountUuid,
+            'message' => 'Withdraw request created',
         ];
     }
 }

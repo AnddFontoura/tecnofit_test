@@ -17,6 +17,8 @@ use App\Repository\AccountWithdrawPixRepository;
 use App\Repository\AccountWithdrawRepository;
 use Carbon\Carbon;
 use Exception;
+use Hyperf\Stringable\Str;
+use InvalidArgumentException;
 
 class AccountWithdrawService
 {
@@ -25,7 +27,6 @@ class AccountWithdrawService
         protected AccountWithdrawRepository $accountWithdrawRepository,
         protected AccountWithdrawPixRepository $accountWithdrawPixRepository,
         protected AccountService $accountService,
-        protected AccountWithdrawPixService $accountWithdrawPixService,
     ) {
     }
 
@@ -34,6 +35,12 @@ class AccountWithdrawService
      */
     public function withdraw(array $requestDto): void
     {
+        $account = $this->accountRepository->getById($requestDto['account_id']);
+
+        if (! $account) {
+            throw new Exception('Account not found');
+        }
+
         $scheduled = isset($requestDto['schedule']);
         $scheduledFor = $requestDto['schedule'] ?? null;
 
@@ -46,6 +53,7 @@ class AccountWithdrawService
         }
 
         $createAccountWithdrawArray = [
+            'id' => (string) Str::uuid(),
             'account_id' => $requestDto['account_id'],
             'method' => $requestDto['method'],
             'amount' => $requestDto['amount'],
@@ -60,6 +68,7 @@ class AccountWithdrawService
 
         if (isset($requestDto['method'])) {
             $this->accountWithdrawPixRepository->create([
+                'id' => (string) Str::uuid(),
                 'account_withdraw_id' => $accountWithdraw->id,
                 'type' => $requestDto['pix']['type'],
                 'key' => $requestDto['pix']['key'],
@@ -67,7 +76,7 @@ class AccountWithdrawService
         }
 
         if (! $scheduled) {
-            $this->accountService->updateBalance(
+            $this->updateBalance(
                 $requestDto['account_id'],
                 $requestDto['amount'],
                 $accountWithdraw->id
@@ -75,13 +84,36 @@ class AccountWithdrawService
         }
     }
 
-    public function storeError(int $accountWithdrawId, string $errorReason): void
+    public function storeError(string $accountWithdrawId, string $errorReason): void
     {
         $this->accountWithdrawRepository->update(
             [
                 'done' => true,
                 'error' => true,
                 'error_reason' => $errorReason,
+            ],
+            $accountWithdrawId
+        );
+    }
+    public function updateBalance(string $accountId, float $amount, string $accountWithdrawId): void
+    {
+        $account = $this->accountRepository->getById($accountId);
+
+        if ($account->balance < $amount) {
+            $this->storeError($accountWithdrawId, 'Insufficient balance');
+            throw new InvalidArgumentException('Insufficient balance ' . $account->balance . ' < ' . $amount);
+        }
+
+        $this->accountRepository->update(
+            [
+                'balance' => $account->balance - $amount,
+            ],
+            $accountId
+        );
+
+        $this->accountWithdrawRepository->update(
+            [
+                'done' => true,
             ],
             $accountWithdrawId
         );
