@@ -40,5 +40,12 @@ class AccountService
             ],
             $accountId
         );
+
+        $this->accountWithdrawRepository->update(
+            [
+                'done' => true,
+            ],
+            $accountWithdrawId
+        );
     }
 }

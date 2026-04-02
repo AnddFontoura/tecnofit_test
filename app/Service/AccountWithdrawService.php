@@ -67,7 +67,11 @@ class AccountWithdrawService
         }
 
         if (! $scheduled) {
-            $this->accountService->updateBalance($requestDto['account_id'], $requestDto['amount'], $accountWithdraw->id);
+            $this->accountService->updateBalance(
+                $requestDto['account_id'],
+                $requestDto['amount'],
+                $accountWithdraw->id
+            );
         }
     }
 

@@ -14,6 +14,6 @@ WORKDIR /opt/www
 # RUN composer install --no-dev --no-scripts
 
 COPY . /opt/www
-RUN composer install && php bin/hyperf.php server:watch
+RUN composer install && php bin/hyperf.php
 
 EXPOSE 9501
