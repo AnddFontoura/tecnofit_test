@@ -15,7 +15,27 @@ services:
     environment:
       - APP_ENV=dev
       - SCAN_CACHEABLE=false
+    networks:
+      - hyperf-skeleton-network
+
+  hyperf-db:
+    image: mysql:8.0
+    container_name: hyperf-db
+    environment:
+      MYSQL_DATABASE: hyperf_db
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: hyperf
+      MYSQL_PASSWORD: hyperf
+    ports:
+      - "3398:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - hyperf-skeleton-network
+
+volumes:
+  db_data:
 
 networks:
-  default:
-    name: hyperf-skeleton
+  hyperf-skeleton-network:
+    name: hyperf-skeleton-network
